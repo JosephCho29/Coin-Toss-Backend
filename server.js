@@ -16,6 +16,10 @@ mongoose.connection.on('connected', () => {
 app.use(express.json());
 
 
+
+app.use('/users', usersRouter);
+
+
 app.listen(3000, () => {
     console.log('The express app is ready!');
 });
