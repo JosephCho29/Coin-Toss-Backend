@@ -13,6 +13,8 @@ mongoose.connection.on('connected', () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
+app.use(cors()); 
+// for middleware-Steven
 app.use(express.json());
 
 
