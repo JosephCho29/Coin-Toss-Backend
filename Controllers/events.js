@@ -53,18 +53,32 @@ router.get("/:eventId", async (req, res) => {
 
 router.post("/:eventId/bet", async (req, res) => {
   try {
-    req.body.better = req.user._id;
-    const event = await Event.findById(req.params.eventId);
-    const user = await User.findById(req.user._id);
-    event.betters.push(req.body);
-    event.pot += req.body.amount;
-    user.tokens -= req.body.amount;
-    await user.save();
+    const { eventId } = req.params;
+    const { _id: userId } = req.user;
+    const { amount } = req.body;
+
+    const event = await Event.findById(eventId);
+    const user = await User.findById(userId);
+
+    if (!event || !user) {
+      return res.status(404).json({ error: "Event or User not found" });
+    }
+
+    const bet = { ...req.body, better: userId };
+    event.betters.push(bet);
+    event.pot += amount;
     await event.save();
+
+    user.tokens -= amount;
     const newBet = event.betters[event.betters.length - 1];
+    user.bets.push(newBet._id);
+    await user.save();
+
     newBet.better = req.user;
+
     res.status(201).json(newBet);
   } catch (error) {
+    console.error(error);
     res.status(500).json(error);
   }
 });
