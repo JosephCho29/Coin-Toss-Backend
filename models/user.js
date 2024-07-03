@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 100,
   },
-  profilePhoto: { type: String, required: true },
+  profilePhoto: { type: String },
 });
 
 userSchema.set("toJSON", {

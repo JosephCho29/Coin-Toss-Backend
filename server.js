@@ -4,7 +4,11 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
+
+
 const usersRouter = require('./controllers/users');
+const eventsRouter = require('./controllers/events');
+const testJWTRouter = require('./controllers/test-jwt');
 
 app.use(cors());
 
@@ -15,13 +19,10 @@ mongoose.connection.on('connected', () => {
 });
 
 app.use(cors()); 
-// for middleware-Steven
 app.use(express.json());
-
-
-
+app.use('/test-jwt', testJWTRouter);
+app.use('/events', eventsRouter);
 app.use('/users', usersRouter);
-
 
 app.listen(3000, () => {
     console.log('The express app is ready!');
