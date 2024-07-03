@@ -5,10 +5,13 @@ const betSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  better: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
+  better: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   amount: {
     type: Number,
+    required: true,
   },
 });
 
@@ -29,6 +32,10 @@ const eventSchema = new mongoose.Schema(
     pot: {
       type: Number,
       default: 0,
+    },
+    betAmount: {
+      type: Number,
+      required: true,
     },
     betters: [betSchema],
   },
