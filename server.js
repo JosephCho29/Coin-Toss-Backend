@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const usersRouter = require("./Controllers/users");
 const eventsRouter = require("./Controllers/events");
+const profileRouter = require("./Controllers/profiles");
 
 app.use(cors());
 
@@ -21,8 +22,8 @@ app.use(express.json());
 
 app.use("/users", usersRouter);
 app.use("/events", eventsRouter);
+app.use("/profile", profileRouter);
 
 app.listen(3000, () => {
   console.log("The express app is ready!");
 });
-
