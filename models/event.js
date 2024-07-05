@@ -41,7 +41,7 @@ const eventSchema = new mongoose.Schema(
     closeOut: {
       type: Date,
       required: true,
-      default: Date.now() + 5 * 60 * 1000,
+      default: Date.now() + 60 * 60 * 1000,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
