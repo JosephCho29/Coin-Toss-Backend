@@ -11,13 +11,17 @@ const userSchema = new mongoose.Schema({
   },
   bets: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: "Bet",
+    ref: "Event",
     default: [],
   },
   friends: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "User",
     default: [],
+  },
+  events: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Event",
   },
   tokens: {
     type: Number,
