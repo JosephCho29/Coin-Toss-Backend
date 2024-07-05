@@ -65,8 +65,8 @@ router.post("/:eventId/bet", async (req, res) => {
     const event = await Event.findById(eventId);
     const user = await User.findById(userId);
 
-    if (!event || !user) {
-      return res.status(404).json({ error: "Event or User not found" });
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
     }
 
     if (user.tokens < amount) {
@@ -100,8 +100,47 @@ router.post("/:eventId/bet", async (req, res) => {
   }
 });
 
-router.post("/:eventId/claim", async (req, res) => {
+router.get("/:eventId/claim", async (req, res) => {
   try {
+    const event = await Event.findById(req.params.eventId);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    if (event.closeOut <= Date.now() && event.pot === 0) {
+      return res
+        .status(400)
+        .json({ error: "Event is closed and tokens were claimed" });
+    }
+
+    const winners = event.betters
+      .filter((better) => better.winningCondition === event.winningCondition)
+      .map((better) => better.better);
+
+    if (winners.length === 0) {
+      return res.status(404).json({ error: "No winners" });
+    }
+
+    const winningsPerPerson = Math.floor(event.pot / winners.length); // do we want the users to have fractions tokens?
+
+    const updatedUsers = [];
+
+    for (const winnerId of winners) {
+      const user = await User.findById(winnerId);
+      user.tokens += winningsPerPerson;
+      await user.save();
+      updatedUsers.push(user.username);
+    }
+
+    event.pot = 0;
+    event.closeOut = Date.now();
+    await event.save();
+
+    res.status(200).json({
+      message: "Winnings claimed successfully",
+      winners: updatedUsers,
+      totalDistributed: winningsPerPerson * winners.length,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
