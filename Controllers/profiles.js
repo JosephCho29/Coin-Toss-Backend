@@ -11,8 +11,8 @@ router.get("/:userId", verifyToken, async (req, res) => {
 
     const user = await User.findById(req.user._id)
       .populate("friends", (select = "username"))
-      .populate("bets")
-      .populate("events");
+      .populate("bets", (select = "title"))
+      .populate("events", (select = "title"));
 
     if (!user) {
       res.status(404);

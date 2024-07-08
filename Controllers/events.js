@@ -148,7 +148,6 @@ router.get("/:eventId/claim", async (req, res) => {
   }
 });
 
-//add edit and delete events
 router.put("/:eventId", async (req, res) => {
   try {
     const event = await Event.findById(req.params.eventId);
