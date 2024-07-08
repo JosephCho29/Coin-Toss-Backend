@@ -31,13 +31,15 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get("/", async (req, res) => {
-  try {
-    const events = await Event.find({}).sort({ createdAt: "desc" });
-    res.status(200).json(events);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+router.get('/', async (req, res) => {
+    try {
+      const event = await Event.find({})
+        .populate('betters')
+        .sort({ createdAt: 'desc' });
+      res.status(200).json(event);
+    } catch (error) {
+      res.status(500).json(error);
+    }
 });
 
 router.get("/:eventId", async (req, res) => {
