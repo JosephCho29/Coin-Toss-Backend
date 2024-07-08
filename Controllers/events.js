@@ -19,7 +19,7 @@ router.post("/", async (req, res) => {
       return res.status(201).json(event);
     } else {
       const event = await Event.create(req.body);
-      event.owner = req.user._id;
+      event.owner = req.body.owner;
       user.events.push(event._id);
       event.save();
       user.save();
@@ -31,15 +31,15 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.get('/', async (req, res) => {
-    try {
-      const event = await Event.find({})
-        .populate('betters')
-        .sort({ createdAt: 'desc' });
-      res.status(200).json(event);
-    } catch (error) {
-      res.status(500).json(error);
-    }
+router.get("/", async (req, res) => {
+  try {
+    const event = await Event.find({})
+      .populate("betters")
+      .sort({ createdAt: "desc" });
+    res.status(200).json(event);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 router.get("/:eventId", async (req, res) => {
@@ -149,5 +149,49 @@ router.get("/:eventId/claim", async (req, res) => {
 });
 
 //add edit and delete events
+router.put("/:eventId", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.eventId);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+    if (req.user._id !== event.owner) {
+      return res
+        .status(401)
+        .json({ error: "You don't have permission to edit this event" });
+    }
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.eventId,
+      req.body,
+      { new: true },
+      res.status(200).json(updatedEvent),
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.delete("/:eventId", async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.eventId);
+    if (!event) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+    if (req.user._id !== event.owner) {
+      return res
+        .status(401)
+        .json({ error: "You don't have permission to delete this event" });
+    }
+
+    if (event.betters.length > 0) {
+      return res.status(400).json({ error: "Event has betters" });
+    }
+
+    await Event.findByIdAndDelete(req.params.eventId);
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
