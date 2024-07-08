@@ -45,6 +45,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+// search for users
 router.get("/:username", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
@@ -57,6 +58,7 @@ router.get("/:username", async (req, res) => {
   }
 });
 
+//add a user as a friend
 router.post("/:userId/add-friend", verifyToken, async (req, res) => {
   try {
     const friendId = req.params.userId;

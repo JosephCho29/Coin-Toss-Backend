@@ -9,7 +9,7 @@ router.use(verifyToken);
 router.post("/", async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    req.body.author = req.user._id;
+    req.body.owner = req.user._id;
     if (req.body.closeOut) {
       req.body.closeOut = Date.now() + req.body.closeOut * 60 * 1000;
       const event = await Event.create(req.body);
@@ -145,5 +145,7 @@ router.get("/:eventId/claim", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+//add edit and delete events
 
 module.exports = router;
