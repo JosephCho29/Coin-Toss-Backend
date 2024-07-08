@@ -17,7 +17,6 @@ mongoose.connection.on("connected", () => {
 });
 
 app.use(cors());
-// for middleware-Steven
 app.use(express.json());
 
 app.use("/users", usersRouter);
