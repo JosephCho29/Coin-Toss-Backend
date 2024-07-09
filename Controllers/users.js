@@ -57,6 +57,15 @@ router.get("/:username", async (req, res) => {
   }
 });
 
+router.get("/", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 router.post("/:userId/add-friend", verifyToken, async (req, res) => {
   try {
     const friendId = req.params.userId;
