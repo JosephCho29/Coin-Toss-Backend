@@ -56,11 +56,12 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-router.get("/:username", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.params.username });
+    const user = await User.findOne({ _id: req.params.userId });
     if (user) {
-      return res.status(200).json({ user });
+      const { username } = user;
+      return res.status(200).json({ username });
     }
     res.status(404).json({ error: "User not found" });
   } catch (error) {
