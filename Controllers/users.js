@@ -129,8 +129,8 @@ router.delete("/:userId", verifyToken, async (req, res) => {
     if (req.user._id !== req.params.userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    await User.findByIdAndDelete(req.params.userId);
-    res.status(204).end();
+    const deletedUser = await User.findByIdAndDelete(req.params.userId);
+    res.status(204).json(deletedUser);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
