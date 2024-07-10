@@ -19,7 +19,10 @@ router.post("/signup", async (req, res) => {
       profilePhoto: req.body.profilePhoto,
     });
     const token = jwt.sign(
-      { username: user.username, _id: user._id },
+      {
+        username: user.username,
+        _id: user._id,
+      },
       process.env.JWT_SECRET,
     );
     res.status(201).json({ user, token });
@@ -33,7 +36,15 @@ router.post("/signin", async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     if (user && bcrypt.compareSync(req.body.password, user.hashedPassword)) {
       const token = jwt.sign(
-        { username: user.username, _id: user._id },
+        {
+          username: user.username,
+          _id: user._id,
+          friends: user.friends,
+          bets: user.bets,
+          tokens: user.tokens,
+          events: user.events,
+          profilePhoto: user.profilePhoto,
+        },
         process.env.JWT_SECRET,
       );
       res.status(200).json({ token });
@@ -66,7 +77,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/:userId/add-friend", verifyToken, async (req, res) => {
+router.post("/:userId/add", verifyToken, async (req, res) => {
   try {
     const friendId = req.params.userId;
     const user = await User.findById(req.user._id);
@@ -92,7 +103,7 @@ router.post("/:userId/add-friend", verifyToken, async (req, res) => {
     friend.friends.push(req.user._id);
     await friend.save();
 
-    res.status(200).json({ message: "Friend added successfully", user });
+    res.status(200).json({ message: "Friend added successfully" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
