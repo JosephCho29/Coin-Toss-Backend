@@ -22,6 +22,11 @@ router.post("/signup", async (req, res) => {
       {
         username: user.username,
         _id: user._id,
+        friends: user.friends,
+        bets: user.bets,
+        tokens: user.tokens,
+        events: user.events,
+        profilePhoto: user.profilePhoto,
       },
       process.env.JWT_SECRET,
     );
@@ -58,14 +63,11 @@ router.post("/signin", async (req, res) => {
 
 router.post("/regenerate", async (req, res) => {
   try {
-    // Verify the existing token
     const decoded = jwt.verify(req.body.token, process.env.JWT_SECRET);
 
-    // Fetch the latest user data from the database
     const user = await User.findOne({ _id: decoded._id });
 
     if (user) {
-      // Create a new token with updated user information
       const newToken = jwt.sign(
         {
           username: user.username,
@@ -79,7 +81,7 @@ router.post("/regenerate", async (req, res) => {
         process.env.JWT_SECRET,
       );
 
-      res.status(200).json({ token: newToken });
+      res.status(200).json({ user, newToken });
     } else {
       res.status(404).json({ error: "User not found." });
     }
