@@ -146,20 +146,6 @@ router.post("/:userId/add", verifyToken, async (req, res) => {
   }
 });
 
-router.put("/:userId", verifyToken, async (req, res) => {
-  try {
-    if (req.user._id !== req.params.userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    const user = await User.findByIdAndUpdate(req.params.userId, req.body, {
-      new: true,
-    });
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
-
 router.delete("/:userId", verifyToken, async (req, res) => {
   try {
     if (req.user._id !== req.params.userId) {

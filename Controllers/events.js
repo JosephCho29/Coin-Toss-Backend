@@ -160,40 +160,19 @@ router.put("/:eventId", async (req, res) => {
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
     }
-    if (req.user._id !== event.owner) {
+    if (req.user._id !== event.owner.toString()) {
       return res
         .status(401)
         .json({ error: "You don't have permission to edit this event" });
     }
-    const updatedEvent = await Event.findByIdAndUpdate(
+
+    await Event.findByIdAndUpdate(
       req.params.eventId,
       req.body,
       { new: true },
-      res.status(200).json(updatedEvent),
+
+      res.status(200).json(event),
     );
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.delete("/:eventId", async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.eventId);
-    if (!event) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-    if (req.user._id !== event.owner) {
-      return res
-        .status(401)
-        .json({ error: "You don't have permission to delete this event" });
-    }
-
-    if (event.betters.length > 0) {
-      return res.status(400).json({ error: "Event has betters" });
-    }
-
-    await Event.findByIdAndDelete(req.params.eventId);
-    res.status(200).json({ message: "Event deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
