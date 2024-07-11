@@ -64,8 +64,8 @@ router.post("/:eventId/bet", async (req, res) => {
     const { _id: userId } = req.user;
     const { amount } = req.body;
 
-    const event = await Event.findById(eventId);
-    const user = await User.findById(userId);
+    const event = await Event.findById(req.params.eventId);
+    const user = await User.findById(req.user._id);
 
     if (!event) {
       return res.status(404).json({ error: "Event not found" });
@@ -83,6 +83,12 @@ router.post("/:eventId/bet", async (req, res) => {
       return res.status(400).json({ error: "Event is closed" });
     }
 
+    if (event.betters.find((better) => better.better === userId)) {
+      return res
+        .status(400)
+        .json({ error: "You have already bet on this event" });
+    }
+
     const bet = { ...req.body, better: userId };
     event.betters.push(bet);
     event.pot += amount;
@@ -95,7 +101,7 @@ router.post("/:eventId/bet", async (req, res) => {
 
     newBet.better = req.user;
 
-    res.status(201).json(newBet);
+    res.status(201).json(event);
   } catch (error) {
     console.error(error);
     res.status(500).json(error);
