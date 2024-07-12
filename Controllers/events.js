@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
     event.owner = req.user._id;
     event.title = req.body.teamA + " vs " + req.body.teamB;
     user.events.push(event._id);
+    event.save();
     user.save();
     return res.status(201).json(event);
   } catch (error) {
