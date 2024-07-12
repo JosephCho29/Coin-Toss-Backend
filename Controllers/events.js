@@ -129,7 +129,7 @@ router.get("/:eventId/claim", async (req, res) => {
       return res.status(404).json({ error: "No winners" });
     }
 
-    const winningsPerPerson = Math.floor(event.pot / winners.length); // do we want the users to have fractions tokens?
+    const winningsPerPerson = Math.floor(event.pot / winners.length);
 
     const updatedUsers = [];
 
