@@ -62,6 +62,7 @@ router.post("/signin", async (req, res) => {
 });
 
 router.post("/regenerate", async (req, res) => {
+  console.log("token from backend", req.body);
   try {
     const decoded = jwt.verify(req.body.token, process.env.JWT_SECRET);
 

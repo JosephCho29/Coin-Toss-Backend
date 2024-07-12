@@ -19,8 +19,17 @@ const eventSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+    },
+    teamB: {
+      type: String,
       required: true,
     },
+
+    teamA: {
+      type: String,
+      required: true,
+    },
+
     description: {
       type: String,
       required: true,
@@ -41,7 +50,6 @@ const eventSchema = new mongoose.Schema(
     closeOut: {
       type: Date,
       required: true,
-      default: Date.now() + 60 * 60 * 1000,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,

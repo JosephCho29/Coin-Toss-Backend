@@ -10,21 +10,13 @@ router.post("/", async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     req.body.owner = req.user._id;
-    if (req.body.closeOut) {
-      req.body.closeOut = Date.now() + req.body.closeOut * 60 * 1000;
-      const event = await Event.create(req.body);
-      event.owner = req.user._id;
-      user.events.push(event._id);
-      user.save();
-      return res.status(201).json(event);
-    } else {
-      const event = await Event.create(req.body);
-      event.owner = req.body.owner;
-      user.events.push(event._id);
-      event.save();
-      user.save();
-      res.status(201).json(event);
-    }
+    req.body.closeOut = Date.now() + req.body.closeOut * 60 * 1000;
+    const event = await Event.create(req.body);
+    event.owner = req.user._id;
+    event.title = req.body.teamA + " vs " + req.body.teamB;
+    user.events.push(event._id);
+    user.save();
+    return res.status(201).json(event);
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
